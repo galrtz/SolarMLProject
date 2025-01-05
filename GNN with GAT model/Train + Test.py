@@ -6,8 +6,12 @@ import torch.nn.functional as F  # Importing PyTorch functional API for common o
 from torch.optim import Adam  # Importing Adam optimizer for training the model
 from torch.utils.data import DataLoader  # Importing DataLoader for batching and shuffling data
 import argparse  # Importing argparse for command-line argument parsing
-from models import GAT  # Assuming the GAT model is defined in models.py
-from utils import load_data  # Assuming the load_data function is in utils.py, used for loading datasets
+from Model import GAT  # Assuming the GAT model is defined in models.py
+import torch # Importing the core PyTorch library for deep learning operations
+import sys
+from DataProcessing.Converting_Dataset_to_DataLoader import create_data_loader_from_directory
+sys.path.append('C:/Users/galrt/PycharmProjects/SolarMLProject/DataProcessing')
+
 
 #################################
 ### TRAIN AND TEST FUNCTIONS  ###
@@ -65,8 +69,12 @@ def test(model, criterion, data_loader):
 
 #Defines hyperparameters like epochs, learning rate, dropout rate, batch size, etc.
 # args is the parsed set of command-line arguments used to configure the training.
-   
-  if __name__ == '__main__':  # Ensure the code runs only when executed as a script
+
+#################################
+############ MAIN  ##############
+#################################
+
+if __name__ == '__main__':  # Ensure the code runs only when executed as a script
     parser = argparse.ArgumentParser(description='PyTorch Graph Attention Network for Regression')
     # Creating an argument parser for the command line interface (CLI)
     
@@ -108,11 +116,11 @@ def test(model, criterion, data_loader):
     
     args = parser.parse_args()  # Parse the arguments passed through the command line
 
-		# This line of code is used to set the "random seed" for PyTorch. By setting a random seed, you ensure that the random 
-		# operations (like weight initialization, data shuffling, etc.) inside PyTorch will produce the same results every time
-		# you run your code.
-		# Example: In most neural networks, the weights are initialized randomly at the beginning of training. 
-		# Without a random seed, each run would start with different weights, leading to different training results.
+    # This line of code is used to set the "random seed" for PyTorch. By setting a random seed, you ensure that the random
+    # operations (like weight initialization, data shuffling, etc.) inside PyTorch will produce the same results every time
+    # you run your code.
+    # Example: In most neural networks, the weights are initialized randomly at the beginning of training.
+    # Without a random seed, each run would start with different weights, leading to different training results.
     torch.manual_seed(args.seed)
     
     #This checks if the code should run on the GPU (CUDA-enabled device) or CPU
@@ -120,17 +128,25 @@ def test(model, criterion, data_loader):
     device = torch.device('cuda' if use_cuda else 'cpu')
     print(f'Using {device} device')
 
-    # Load data using the load_data function (you should implement this function)
-    
+    # Load data using the load_data function
+    start_time = time.time()
+    load_data = create_data_loader_from_directory("C:/Users/galrt/Desktop/data")
+    print(load_data)
+    end_time_1 = time.time()
+    print(f"Program finished running data processing in {end_time_1 - start_time:.2f} seconds.")
+
     # load_data('train') loads the training data.
-		#	batch_size=args.batch_size sets the number of samples per batch.
-		# shuffle=True shuffles the data before splitting it into batches.
+	# batch_size=args.batch_size sets the number of samples per batch.
+	# shuffle=True shuffles the data before splitting it into batches.
     data_loader_train = DataLoader(load_data('train'), batch_size=args.batch_size, shuffle=True)  # Training DataLoader - This loads the training dataset and prepares it for batching (without shuffling).
     data_loader_val = DataLoader(load_data('val'), batch_size=args.batch_size, shuffle=False)  # Validation DataLoader - This loads the validation dataset and prepares it for batching (without shuffling).
     data_loader_test = DataLoader(load_data('test'), batch_size=args.batch_size, shuffle=False)  # Test DataLoader -  This loads the test dataset and prepares it for batching (without shuffling).
 
+    end_time_2 = time.time()
+    print(f"Program finished running data processing 2 in {end_time_2 - start_time:.2f} seconds.")
+
     # Create the model
-    gat_net = GAT(
+    Gat_net = GAT(
         in_features=input_tensor.shape[1],  # Number of input features per node  
         n_hidden=args.hidden_dim,  # Output size of the first Graph Attention Layer
         n_heads=args.num_heads,  # Number of attention heads in the first Graph Attention Layer
@@ -143,24 +159,32 @@ def test(model, criterion, data_loader):
     # Configure optimizer and loss function for regression
     # gat_net.parameters() passes the model's parameters to the optimizer.
     # lr=args.lr sets the learning rate.
-		# weight_decay=args.l2 applies L2 regularization (weight decay) to prevent overfitting
-    optimizer = Adam(gat_net.parameters(), lr=args.lr, weight_decay=args.l2)  # Adam optimizer with learning rate and weight decay
+	# weight_decay=args.l2 applies L2 regularization (weight decay) to prevent overfitting
+    optimizer = Adam(Gat_net.parameters(), lr=args.lr, weight_decay=args.l2)  # Adam optimizer with learning rate and weight decay
     criterion = nn.MSELoss()  # Mean Squared Error loss for regression tasks - This sets up the loss function, which is Mean Squared Error (MSE), appropriate for regression tasks.
+
+    print("starting training and validation")
 
     # Train and evaluate the model
     for epoch in range(args.epochs):  # Loop over the specified number of epochs
-        train_loss = train_iter(epoch + 1, gat_net, optimizer, criterion, data_loader_train, args.val_every)  # Train for one epoch
+        train_loss = train_iter(epoch + 1, Gat_net, optimizer, criterion, data_loader_train, args.val_every)  # Train for one epoch
         
         #This condition checks if it's time to evaluate the model on a validation set. 
         # Specifically, it ensures that the model isn't evaluated on the validation set too often, 
         # which might be inefficient, but also frequently enough to monitor progress and prevent overfitting
         if epoch % args.val_every == 0:  # If the epoch number is divisible by val_every, run validation
-            val_loss = test(gat_net, criterion, data_loader_val)  # Test the model on the validation set and computes the loss
+            val_loss = test(Gat_net, criterion, data_loader_val)  # Test the model on the validation set and computes the loss
             print(f'Validation loss: {val_loss:.4f}')  # Print validation loss
 
         if args.dry_run:  # If dry_run is enabled, break after one epoch
             break
 
+    end_time_3 = time.time()
+    print(f"Program finished training and validation in {end_time_3 - start_time:.2f} seconds.")
+
     # Final test
-    test_loss = test(gat_net, criterion, data_loader_test)  # Evaluate the model on the test set
+    test_loss = test(Gat_net, criterion, data_loader_test)  # Evaluate the model on the test set
+
     print(f'Test set results: loss {test_loss:.4f}')  # Print the test loss
+    end_time_4 = time.time()
+    print(f"Program finished testingin {end_time_4 - start_time:.2f} seconds.")

@@ -4,7 +4,28 @@ from torch_geometric.data import Data
 import os
 import torch
 from torch_geometric.loader import DataLoader
-import time
+import time  # Importing time for tracking execution time
+import pickle
+
+# Save the DataLoader's data_list to a .pkl file
+# Example usage
+# loader = create_data_loader_from_directory('path_to_csv_directory')
+# save_data_loader(loader, 'loader_data.pkl')
+def save_data_loader(loader, filename):
+    data_list = loader.dataset  # Extract the data list from the loader
+    with open(filename, 'wb') as f:
+        pickle.dump(data_list, f)
+
+# Load the data list from a .pkl file and re-create the DataLoader
+# Example usage
+# loader = load_data_loader('loader_data.pkl
+def load_data_loader(filename, batch_size=32):
+    with open(filename, 'rb') as f:
+        data_list = pickle.load(f)
+
+    # Recreate the DataLoader with the loaded data list
+    loader = DataLoader(data_list, batch_size=batch_size, shuffle=True, num_workers=4)
+    return loader
 
 def euclidean_distance(coord1, coord2):
     """
@@ -121,9 +142,7 @@ def create_data_loader_from_directory(csv_directory, batch_size=32):
     return loader
 
 start_time = time.time()
-
-loader = create_data_loader_from_directory("C:/Users/galrt/Desktop/data")
-print(loader)
-
-end_time = time.time()
-print(f"Program finished running in {end_time - start_time:.2f} seconds.")
+load_data = create_data_loader_from_directory("C:/Users/galrt/Desktop/data")
+print(load_data)
+end_time_1 = time.time()
+print(f"Program finished running data processing in {end_time_1 - start_time:.2f} seconds.")

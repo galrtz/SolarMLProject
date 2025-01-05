@@ -1,13 +1,4 @@
-import os  # Importing the os library for handling file paths and system operations
-import time  # Importing time for tracking execution time
 import torch  # Importing PyTorch for tensor operations and neural networks
-from torch import nn  # Importing neural network tools from PyTorch
-import torch.nn.functional as F  # Importing PyTorch functional API for common operations like activation functions
-from torch.optim import Adam  # Importing Adam optimizer for training the model
-from torch.utils.data import DataLoader  # Importing DataLoader for batching and shuffling data
-import argparse  # Importing argparse for command-line argument parsing
-from models import GAT  # Assuming the GAT model is defined in models.py
-from utils import load_data  # Assuming the load_data function is in utils.py, used for loading datasets
 
 #######################
 ### TEST FUNCTION  ###
