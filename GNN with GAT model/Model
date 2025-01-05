@@ -55,7 +55,7 @@ class GAT(nn.Module):
 # num_classes: after all attention layers - num_classes in this case should correspond to 1,
 # as you're predicting a single continuous value (the GHI at a certain time).
 
-Number of classes for the classification task (output size).
+# Number of classes for the classification task (output size).
 
 def __init__(self,
     in_features,
