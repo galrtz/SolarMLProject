@@ -1,0 +1,61 @@
+import pandas as pd
+import numpy as np
+import torch
+from torch_geometric.data import Data
+from geopy.distance import geodesic
+from sklearn.neighbors import KDTree
+
+# Step 1: Load the data
+data = pd.read_csv("C:/Users/hadar/Desktop/nrel_united/processed_data888.csv")
+sorted_df = data.sort_values(by="location_id")
+
+# Step 2: Extract node features (Longitude, Latitude, GHI_t-1)
+node_features = sorted_df[["longitude", "latitude", "GHI_t-1"]]
+static_features = node_features[["longitude", "latitude"]]
+dynamic_features = node_features[["GHI_t-1"]]
+node_features_combined = pd.concat([static_features, dynamic_features], axis=1)
+node_features_matrix = node_features_combined.to_numpy()
+
+# Step 3: Extract labels (GHI at time t)
+labels = sorted_df[["GHI_t"]]
+y = labels.to_numpy()
+
+# Step 4: Create a fully connected graph (complete graph)
+num_nodes = len(sorted_df)
+edges_source = []
+edges_target = []
+edge_weights = []
+
+# Create a complete graph where every node is connected to every other node
+# In PyTorch Geometric, to input a graph into a model, you need to use the edge list format
+#, not a full adjacency matrix. The reason for this is that PyTorch Geometric works more
+# efficiently with edge lists, which allows it to handle larger graphs and sparse graphs better.
+for i in range(num_nodes):
+    for j in range(i + 1, num_nodes):
+        edges_source.append(i)
+        edges_target.append(j)
+
+        # Calculate geographical distance
+        coord1 = (static_features.iloc[i].iloc[0], static_features.iloc[i].iloc[1])
+        coord2 = (static_features.iloc[j].iloc[0], static_features.iloc[j].iloc[1])
+        distance = geodesic(coord1, coord2).kilometers
+
+        # Calculate the weight using the formula H * exp(-distance / characteristic_distance)
+        H = 10  # Example value for forecast time (change as necessary)
+        characteristic_distance = 100  # Example characteristic distance (change as necessary)
+        weight = H * np.exp(-distance / characteristic_distance)
+
+        edge_weights.append(weight)  # In PyTorch Geometric, the connection between each edge and its weight is made through the edge indices in edge_index.
+
+# Step 5: Convert edge lists and weights to PyTorch tensors
+edge_index = torch.tensor([edges_source, edges_target], dtype=torch.long)
+edge_attr = torch.tensor(edge_weights, dtype=torch.float)
+
+# Step 6: Create graph data object
+x = torch.tensor(node_features_matrix, dtype=torch.float)  # Node features as a tensor
+y = torch.tensor(y, dtype=torch.float)  # Labels as a tensor
+
+graph_data = Data(x=x, edge_index=edge_index, edge_attr=edge_attr, y=y)
+
+print("Graph Data Object with Edge Weights:")
+print(graph_data)
