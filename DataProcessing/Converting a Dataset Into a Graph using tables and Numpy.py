@@ -1,9 +1,24 @@
 import pandas as pd
 import numpy as np
-import torch
 from torch_geometric.data import Data
-from geopy.distance import geodesic
+import os
+import torch
+from torch_geometric.loader import DataLoader
+import time
 
+def euclidean_distance(coord1, coord2):
+    """
+    Calculate the Euclidean distance between two geographical coordinates (latitude, longitude).
+
+    Parameters:
+    - coord1, coord2: tuples representing (latitude, longitude)
+
+    Returns:
+    - Euclidean distance between the two coordinates.
+    """
+    lat1, lon1 = coord1
+    lat2, lon2 = coord2
+    return np.sqrt((lat2 - lat1) ** 2 + (lon2 - lon1) ** 2)
 
 def create_single_graph_data(csv_file_path):
     """
@@ -44,10 +59,12 @@ def create_single_graph_data(csv_file_path):
             edges_source.append(i)
             edges_target.append(j)
 
-            # Calculate geographical distance
-            coord1 = (static_features.iloc[i].iloc[0], static_features.iloc[i].iloc[1])
-            coord2 = (static_features.iloc[j].iloc[0], static_features.iloc[j].iloc[1])
-            distance = geodesic(coord1, coord2).kilometers
+            # Extract latitude and longitude for both nodes
+            coord1 = (static_features.iloc[i].iloc[0], static_features.iloc[i].iloc[1])  # (lat1, lon1)
+            coord2 = (static_features.iloc[j].iloc[0], static_features.iloc[j].iloc[1])  # (lat2, lon2)
+
+            # Calculate the Euclidean distance between the two coordinates
+            distance = euclidean_distance(coord1, coord2)
 
             # Calculate the weight using the formula H * exp(-distance / characteristic_distance)
             H = 10  # Example value for forecast time (change as necessary)
@@ -68,4 +85,45 @@ def create_single_graph_data(csv_file_path):
     graph_data = Data(x=x, edge_index=edge_index, edge_attr=edge_attr, y=y)
 
     # Return the graph data object
+    print(graph_data)
     return graph_data
+
+def create_data_loader_from_directory(csv_directory, batch_size=32):
+    """
+    Function to create a DataLoader for multiple graphs from a directory containing CSV files.
+
+    Parameters:
+    - csv_directory (str): The path to the directory containing the raw CSV files.
+    - num_graphs (int, optional): The number of graphs to generate (default is None, meaning all files in the directory).
+    - batch_size (int): The batch size for the DataLoader (default is 32).
+
+    Returns:
+    - loader (DataLoader): The DataLoader containing multiple graphs in batches.
+    """
+    # List to store multiple graph data objects
+    data_list = []
+
+    # Get all CSV files in the directory
+    csv_files = [f for f in os.listdir(csv_directory) if f.endswith('.csv')]
+
+    # Iterate over all CSV files in the directory and create graphs
+    for file_name in csv_files:
+        file_path = os.path.join(csv_directory, file_name)
+
+        # Create a graph for each file and add it to the list
+        graph_data_i = create_single_graph_data(file_path)  # Assume this function processes each CSV file into a graph
+        data_list.append(graph_data_i)
+
+    # Initialize a DataLoader to batch multiple graphs
+    loader = DataLoader(data_list, batch_size=batch_size, shuffle=True, num_workers=4)
+
+    # Return the DataLoader
+    return loader
+
+start_time = time.time()
+
+loader = create_data_loader_from_directory("C:/Users/galrt/Desktop/data")
+print(loader)
+
+end_time = time.time()
+print(f"Program finished running in {end_time - start_time:.2f} seconds.")
