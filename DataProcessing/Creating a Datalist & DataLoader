@@ -1,31 +1,35 @@
-# Step 10: Create a DataLoader for multiple graphs
-
+import os
+import torch
 from torch_geometric.loader import DataLoader
 
-NUM_GRAPHS = 10 # constant - number of graphs to be learned
+def create_data_loader_from_directory(csv_directory, batch_size=32):
+    """
+    Function to create a DataLoader for multiple graphs from a directory containing CSV files.
 
-# In many machine learning tasks, you may want to process more than one graph at a time, 
-# especially when working with large datasets. The DataLoader provides a way to 
-# load and process multiple graphs in batches.
+    Parameters:
+    - csv_directory (str): The path to the directory containing the raw CSV files.
+    - num_graphs (int, optional): The number of graphs to generate (default is None, meaning all files in the directory).
+    - batch_size (int): The batch size for the DataLoader (default is 32).
 
-# a data_list is a list of graph data objects, where each object represents a separate graph.
-# Each graph is represented by a Data object, which contains:
-#      - x: Node features (converted to a tensor).
-#      - edge_index: Edge connections (converted to a tensor).
-#      - y: Labels or targets (converted to a tensor).
+    Returns:
+    - loader (DataLoader): The DataLoader containing multiple graphs in batches.
+    """
+    # List to store multiple graph data objects
+    data_list = []
 
-# The list data_list is created by iterating over list_of_x, list_of_edge_indices, and list_of_y.
-# These lists contain the node features, edge indices, and labels for multiple graphs 
-# (not just a single graph). For each graph, a Data object is created,
-# and the respective features and labels are converted into PyTorch tensors.
-# The zip() function is used to iterate through these lists together, ensuring that each
-# element in list_of_x corresponds to the correct elements in list_of_edge_indices and list_of_y.
+    # Get all CSV files in the directory
+    csv_files = [f for f in os.listdir(csv_directory) if f.endswith('.csv')]
 
-data_list = []
-for i in range(NUM_GRAPHS):
-	graph_data_i = create_single_graph_data('path_csv_file')
-	data_list = data_list.append(graph_data_i)
-	
-# Initialize a DataLoader to batch multiple graphs
-loader = DataLoader(data_list, batch_size=32, shuffle=True)
-print("DataLoader created with batch size 32")  # Confirm DataLoader creation
+    # Iterate over all CSV files in the directory and create graphs
+    for file_name in csv_files:
+        file_path = os.path.join(csv_directory, file_name)
+
+        # Create a graph for each file and add it to the list
+        graph_data_i = create_single_graph_data(file_path)  # Assume this function processes each CSV file into a graph
+        data_list.append(graph_data_i)
+
+    # Initialize a DataLoader to batch multiple graphs
+    loader = DataLoader(data_list, batch_size=batch_size, shuffle=True)
+
+    # Return the DataLoader
+    return loader
