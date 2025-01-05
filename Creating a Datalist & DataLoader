@@ -1,0 +1,31 @@
+# Step 10: Create a DataLoader for multiple graphs
+
+from torch_geometric.loader import DataLoader
+
+NUM_GRAPHS = 10 # constant - number of graphs to be learned
+
+# In many machine learning tasks, you may want to process more than one graph at a time, 
+# especially when working with large datasets. The DataLoader provides a way to 
+# load and process multiple graphs in batches.
+
+# a data_list is a list of graph data objects, where each object represents a separate graph.
+# Each graph is represented by a Data object, which contains:
+#      - x: Node features (converted to a tensor).
+#      - edge_index: Edge connections (converted to a tensor).
+#      - y: Labels or targets (converted to a tensor).
+
+# The list data_list is created by iterating over list_of_x, list_of_edge_indices, and list_of_y.
+# These lists contain the node features, edge indices, and labels for multiple graphs 
+# (not just a single graph). For each graph, a Data object is created,
+# and the respective features and labels are converted into PyTorch tensors.
+# The zip() function is used to iterate through these lists together, ensuring that each
+# element in list_of_x corresponds to the correct elements in list_of_edge_indices and list_of_y.
+
+data_list = []
+for i in range(NUM_GRAPHS):
+	graph_data_i = create_single_graph_data('path_csv_file')
+	data_list = data_list.append(graph_data_i)
+	
+# Initialize a DataLoader to batch multiple graphs
+loader = DataLoader(data_list, batch_size=32, shuffle=True)
+print("DataLoader created with batch size 32")  # Confirm DataLoader creation
