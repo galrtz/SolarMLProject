@@ -1,0 +1,38 @@
+import os  # Importing the os library for handling file paths and system operations
+import time  # Importing time for tracking execution time
+import torch  # Importing PyTorch for tensor operations and neural networks
+from torch import nn  # Importing neural network tools from PyTorch
+import torch.nn.functional as F  # Importing PyTorch functional API for common operations like activation functions
+from torch.optim import Adam  # Importing Adam optimizer for training the model
+from torch.utils.data import DataLoader  # Importing DataLoader for batching and shuffling data
+import argparse  # Importing argparse for command-line argument parsing
+from models import GAT  # Assuming the GAT model is defined in models.py
+from utils import load_data  # Assuming the load_data function is in utils.py, used for loading datasets
+
+#######################
+### TEST FUNCTION  ###
+#######################
+
+def test(model, criterion, data_loader):
+    model.eval()  # Set the model to evaluation mode (disables dropout, etc.)
+    total_loss = 0  # Initialize total loss accumulator for the test set
+    total_samples = 0  # Initialize the counter for total samples in the test set
+    with torch.no_grad():  # Disable gradient calculation (faster inference)
+        for batch in data_loader:  # Iterate through each batch in the test DataLoader
+            input_tensor, edge_index, edge_attr, target = batch  # Get the batch data (features, edge_index, edge_attr, GHI targets)
+
+            # Ensure that input_tensor, edge_index, edge_attr, and target are moved to the correct device (CPU/GPU)
+            input_tensor, edge_index, edge_attr, target = input_tensor.to(device), edge_index.to(device), edge_attr.to(device), target.to(device)
+
+            output = model(input_tensor, edge_index, edge_attr)  # Forward pass through the model
+            loss = criterion(output.squeeze(), target)  # Calculate the loss
+
+            total_loss += loss.item() * len(target)  # Accumulate the loss for the current batch
+            total_samples += len(target)  # Update the number of samples processed
+
+    avg_loss = total_loss / total_samples  # Calculate the average loss across all test samples
+    return avg_loss  # Return the average test loss - helps summarize the model's performance across all batches in the current epoch
+    
+ # Final test
+    test_loss = test(gat_net, criterion, data_loader_test)  # Evaluate the model on the test set
+    print(f'Test set results: loss {test_loss:.4f}')  # Print the test loss
