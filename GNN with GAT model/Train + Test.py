@@ -7,9 +7,9 @@ from torch.optim import Adam  # Importing Adam optimizer for training the model
 from torch.utils.data import DataLoader  # Importing DataLoader for batching and shuffling data
 import argparse  # Importing argparse for command-line argument parsing
 from Model import GAT  # Assuming the GAT model is defined in models.py
-import torch # Importing the core PyTorch library for deep learning operations
+import torch  # Importing the core PyTorch library for deep learning operations
 import sys
-from DataProcessing.Converting_Dataset_to_DataLoader import create_data_loader_from_directory
+from DataProcessing.Converting_Dataset_to_DataLoader import load_data_loader
 sys.path.append('C:/Users/galrt/PycharmProjects/SolarMLProject/DataProcessing')
 
 
@@ -130,7 +130,8 @@ if __name__ == '__main__':  # Ensure the code runs only when executed as a scrip
 
     # Load data using the load_data function
     start_time = time.time()
-    load_data = create_data_loader_from_directory("C:/Users/galrt/Desktop/data")
+
+    load_data = load_data_loader("C:/Users/galrt/Desktop/data/pkl", batch_size=32)
     print(load_data)
     end_time_1 = time.time()
     print(f"Program finished running data processing in {end_time_1 - start_time:.2f} seconds.")

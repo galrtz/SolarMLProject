@@ -11,8 +11,7 @@ import pickle
 # Example usage
 # loader = create_data_loader_from_directory('path_to_csv_directory')
 # save_data_loader(loader, 'loader_data.pkl')
-def save_data_loader(loader, filename):
-    data_list = loader.dataset  # Extract the data list from the loader
+def save_data_list(loader, filename):
     with open(filename, 'wb') as f:
         pickle.dump(data_list, f)
 
@@ -135,14 +134,10 @@ def create_data_loader_from_directory(csv_directory, batch_size=32):
         graph_data_i = create_single_graph_data(file_path)  # Assume this function processes each CSV file into a graph
         data_list.append(graph_data_i)
 
-    # Initialize a DataLoader to batch multiple graphs
-    loader = DataLoader(data_list, batch_size=batch_size, shuffle=True, num_workers=4)
-
-    # Return the DataLoader
-    return loader
+    return data_list
 
 start_time = time.time()
-load_data = create_data_loader_from_directory("C:/Users/galrt/Desktop/data")
-print(load_data)
+data_list = create_data_loader_from_directory("C:/Users/galrt/Desktop/data")
+save_data_list(data_list, "C:/Users/galrt/Desktop/data/data_load.pkl")
 end_time_1 = time.time()
 print(f"Program finished running data processing in {end_time_1 - start_time:.2f} seconds.")
