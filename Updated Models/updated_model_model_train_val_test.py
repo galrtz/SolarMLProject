@@ -13,11 +13,6 @@ from torch_geometric.nn import GATConv
 
 sys.path.append('C:/Users/galrt/PycharmProjects/SolarMLProject/DataProcessing')
 
-# Define the device as CPU, regardless of whether CUDA is available
-device = torch.device('cpu')  # Set the device to 'cpu'
-
-print(f'Using {device} device')  # Output confirmation
-
 # Function to load data
 def load_data_list(filename, batch_size=32):
     with open(filename, 'rb') as f:
@@ -128,10 +123,6 @@ if __name__ == '__main__':
     load_data_list = load_data_list("C:/Users/hadar/Desktop/dataloader_pkl/loader_data_one_test_1.pkl", batch_size=16)  # Reduced batch size
     """"
     # Split data into train, validation, and test
-    train_data = load_data_list[:int(0.7 * len(load_data_list))]
-    val_data = load_data_list[int(0.7 * len(load_data_list)):int(0.85 * len(load_data_list))]
-    test_data = load_data_list[int(0.85 * len(load_data_list)):]
-
     train_data = load_data_list[:int(0.7 * len(load_data_list))]
     val_data = load_data_list[int(0.7 * len(load_data_list)):int(0.85 * len(load_data_list))]
     test_data = load_data_list[int(0.85 * len(load_data_list)):]
