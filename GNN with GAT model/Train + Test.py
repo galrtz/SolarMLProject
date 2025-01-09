@@ -130,7 +130,6 @@ if __name__ == '__main__':  # Ensure the code runs only when executed as a scrip
 
     # Load data using the load_data function
     start_time = time.time()
-
     load_data = load_data_loader("C:/Users/galrt/Desktop/data/pkl", batch_size=32)
     print(load_data)
     end_time_1 = time.time()
