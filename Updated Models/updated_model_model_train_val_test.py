@@ -10,6 +10,8 @@ import sys
 from torch_geometric.loader import DataLoader
 import pickle
 from torch_geometric.nn import GATConv
+from saving_and_loading_model import save_model
+
 sys.path.append('C:/Users/galrt/PycharmProjects/SolarMLProject/DataProcessing')
 
 # Function to load data
@@ -104,7 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('--num-heads', type=int, default=8, help='number of attention heads (default: 8)')
     parser.add_argument('--concat-heads', action='store_true', default=False, help='whether to concatenate attention heads')
     parser.add_argument('--val-every', type=int, default=20, help='epochs to wait for print training and validation evaluation')
-    parser.add_argument('--batch-size', type=int, default=1, help='batch size (default: 16)')  # Set batch size to 16 to help with memory
+    parser.add_argument('--batch-size', type=int, default=16, help='batch size (default: 16)')  # Set batch size to 16 to help with memory
     parser.add_argument('--no-cuda', action='store_true', default=False, help='disables CUDA training')
     parser.add_argument('--dry-run', action='store_true', default=False, help='quickly check a single pass')
     parser.add_argument('--seed', type=int, default=13, metavar='S', help='random seed (default: 13)')
@@ -119,21 +121,21 @@ if __name__ == '__main__':
 
     # Load data
     start_time = time.time()
-    load_data_list = load_data_list("C:/Users/hadar/Desktop/dataloader_pkl/loader_data_one_test_1.pkl", batch_size=16)  # Reduced batch size
-    """"
+    load_data_list = load_data_list("C:/Users/hadar/Desktop/dataloader_pkl/loader_data.pkl", batch_size=args.batch_size)  # Reduced batch size
+
     # Split data into train, validation, and test
     train_data = load_data_list[:int(0.7 * len(load_data_list))]
     val_data = load_data_list[int(0.7 * len(load_data_list)):int(0.85 * len(load_data_list))]
     test_data = load_data_list[int(0.85 * len(load_data_list)):]
-    """""
+
     # Create data loaders
-    data_loader_train = DataLoader(load_data_list, batch_size=args.batch_size, shuffle=True)
-    data_loader_val = DataLoader(load_data_list, batch_size=args.batch_size, shuffle=False)
-    data_loader_test = DataLoader(load_data_list, batch_size=args.batch_size, shuffle=False)
+    data_loader_train = DataLoader(train_data, batch_size=args.batch_size, shuffle=True)
+    data_loader_val = DataLoader(val_data, batch_size=args.batch_size, shuffle=False)
+    data_loader_test = DataLoader(test_data, batch_size=args.batch_size, shuffle=False)
 
     # Model initialization
     Gat_net = GAT(
-        in_features=3,  # Number of input features per node
+        in_features=22,  # Number of input features per node
         n_hidden=args.hidden_dim,  # Output size of the first Graph Attention Layer
         n_heads=args.num_heads,  # Number of attention heads in the first Graph Attention Layer
         num_classes=1,  # Only one output: GHI (regression task)
@@ -168,3 +170,7 @@ if __name__ == '__main__':
 
     end_time_4 = time.time()
     print(f"Program finished testing in {end_time_4 - start_time:.2f} seconds.")
+
+    save_model(Gat_net, "C:/Users/hadar/Desktop/pkl_new/model_4_graph.pkl")
+    for key, value in (Gat_net.state_dict()).items():
+        print(f"{key}: {value.shape}")
