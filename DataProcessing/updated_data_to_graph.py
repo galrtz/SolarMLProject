@@ -132,7 +132,7 @@ def create_data_loader_from_directory(csv_directory, batch_size=32):
 # Example usage
 start_time = time.time()
 data_list = create_data_loader_from_directory("C:/Users/hadar/Desktop/output2")
-print(f"DataLoader created with {len(data_list.dataset)} graphs.")
+#print(f"DataLoader created with {len(data_list.dataset)} graphs.")
 
 # Save DataLoader to a pickle file
 save_data_loader(data_list, "C:/Users/hadar/Desktop/dataloader_pkl/loader_data.pkl")
