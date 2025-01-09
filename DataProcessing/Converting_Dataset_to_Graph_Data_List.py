@@ -130,10 +130,10 @@ def create_data_list_from_directory(csv_directory, batch_size=32):
 
 # Example usage
 start_time = time.time()
-data_list = create_data_list_from_directory("C:/Users/hadar/Desktop/one_test")
+data_list = create_data_list_from_directory("C:/Users/hadar/Desktop/less_node_22_features")
 
 # Save DataLoader to a pickle file
-save_data_list(data_list, "C:/Users/hadar/Desktop/pkl_new/pkl1.pkl")
+save_data_list(data_list, "C:/Users/hadar/Desktop/less_node_22_features/pkl_file.pkl")
 
 end_time_1 = time.time()
 print(f"Program finished running data processing in {end_time_1 - start_time:.2f} seconds.")

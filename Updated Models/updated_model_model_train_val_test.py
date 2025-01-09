@@ -42,7 +42,7 @@ class GAT(nn.Module):
         return x
 
 # Training function
-def train_iter(epoch, model, optimizer, criterion, data_loader, print_every=10):
+def train_iter(epoch, model, optimizer, criterion, data_loader, print_every=1):
     model.train()
     total_loss = 0
     for batch in data_loader:
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch Graph Attention Network for Regression')
 
     # Hyperparameters (you can modify these as needed)
-    parser.add_argument('--epochs', type=int, default=300, help='number of epochs to train (default: 300)')
+    parser.add_argument('--epochs', type=int, default=10, help='number of epochs to train (default: 300)')
     parser.add_argument('--lr', type=float, default=0.005, help='learning rate (default: 0.005)')
     parser.add_argument('--l2', type=float, default=5e-4, help='weight decay (default: 5e-4)')
     parser.add_argument('--dropout-p', type=float, default=0.6, help='dropout probability (default: 0.6)')
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('--num-heads', type=int, default=8, help='number of attention heads (default: 8)')
     parser.add_argument('--concat-heads', action='store_true', default=False, help='whether to concatenate attention heads')
     parser.add_argument('--val-every', type=int, default=20, help='epochs to wait for print training and validation evaluation')
-    parser.add_argument('--batch-size', type=int, default=16, help='batch size (default: 16)')  # Set batch size to 16 to help with memory
+    parser.add_argument('--batch-size', type=int, default=1, help='batch size (default: 16)')  # Set batch size to 16 to help with memory
     parser.add_argument('--no-cuda', action='store_true', default=False, help='disables CUDA training')
     parser.add_argument('--dry-run', action='store_true', default=False, help='quickly check a single pass')
     parser.add_argument('--seed', type=int, default=13, metavar='S', help='random seed (default: 13)')
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
     # Load data
     start_time = time.time()
-    load_data_list = load_data_list("C:/Users/hadar/Desktop/dataloader_pkl/loader_data.pkl", batch_size=args.batch_size)  # Reduced batch size
+    load_data_list = load_data_list("C:/Users/hadar/Desktop/output2/loader_data.pkl", batch_size=args.batch_size)  # Reduced batch size"C:\Users\hadar\Desktop\output2\loader_data.pkl"
 
     # Split data into train, validation, and test
     train_data = load_data_list[:int(0.7 * len(load_data_list))]
@@ -129,9 +129,9 @@ if __name__ == '__main__':
     test_data = load_data_list[int(0.85 * len(load_data_list)):]
 
     # Create data loaders
-    data_loader_train = DataLoader(train_data, batch_size=args.batch_size, shuffle=True)
-    data_loader_val = DataLoader(val_data, batch_size=args.batch_size, shuffle=False)
-    data_loader_test = DataLoader(test_data, batch_size=args.batch_size, shuffle=False)
+    data_loader_train = DataLoader(load_data_list, batch_size=args.batch_size, shuffle=True)
+    data_loader_val = DataLoader(load_data_list, batch_size=args.batch_size, shuffle=False)
+    data_loader_test = DataLoader(load_data_list, batch_size=args.batch_size, shuffle=False)
 
     # Model initialization
     Gat_net = GAT(
@@ -152,7 +152,7 @@ if __name__ == '__main__':
 
     # Train and evaluate the model
     for epoch in range(args.epochs):
-        train_loss = train_iter(epoch + 1, Gat_net, optimizer, criterion, data_loader_train, args.val_every)
+        train_loss = train_iter(epoch + 1, Gat_net, optimizer, criterion, data_loader_train)
 
         if epoch % args.val_every == 0:
             val_loss = test(Gat_net, criterion, data_loader_val)
