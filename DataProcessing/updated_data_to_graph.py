@@ -5,8 +5,7 @@ from torch_geometric.data import Data
 from torch_geometric.loader import DataLoader
 import os
 import pickle
-import time77777
-33333333333
+import time
 
 # Save the DataLoader's data_list to a .pkl file
 def save_data_loader(data_list, filename):
@@ -134,7 +133,7 @@ start_time = time.time()
 data_list = create_data_loader_from_directory("C:/Users/hadar/Desktop/output2")
 #print(f"DataLoader created with {len(data_list.dataset)} graphs.")
 
-# Sככככave DataLoader to a pickle file
+# Save DataLoader to a pickle file
 save_data_loader(data_list, "C:/Users/hadar/Desktop/dataloader_pkl/loader_data.pkl")
 
 end_time_1 = time.time()
