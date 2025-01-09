@@ -5,12 +5,11 @@ from torch import nn
 import torch.nn.functional as F
 from torch.optim import Adam
 import argparse
-from Model import GAT  # Assuming GAT model is defined elsewhere
+from GAT_model import GAT  # Assuming GAT model is defined elsewhere
 import sys
 from torch_geometric.loader import DataLoader
 import pickle
 from torch_geometric.nn import GATConv
-
 sys.path.append('C:/Users/galrt/PycharmProjects/SolarMLProject/DataProcessing')
 
 # Function to load data
