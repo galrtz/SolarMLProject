@@ -13,8 +13,21 @@ from torch_geometric.transforms import RandomNodeSplit
 torch.manual_seed(42)
 np.random.seed(42)
 
+###########################
+#### Helper Functions #####
+###########################
 
-# _______ Temporal-Spatial GAT Model (Using LSTM for Temporal Learning) _______
+# Load graph data
+def load_graph(filename):
+    with open(filename, 'rb') as f:
+        graph = pickle.load(f)
+    return graph
+
+###########################
+## Model's Architecture ###
+###########################
+
+# Temporal-Spatial GAT Model (Using LSTM for Temporal Learning)
 class GAT_LSTM(nn.Module):
     def __init__(self, in_features, hidden_dim, num_heads, num_classes, time_steps, dropout=0.4):
         super(GAT_LSTM, self).__init__()
@@ -51,17 +64,9 @@ class GAT_LSTM(nn.Module):
 
         return x_out
 
-
-# Load graph data
-def load_graph(filename):
-    with open(filename, 'rb') as f:
-        graph = pickle.load(f)
-    return graph
-
-
-#################################
-### TRAIN, TEST, & PLOTTING  ###
-#################################
+#####################################
+## Model Training & Eval Functions ##
+#####################################
 
 def nrmse_loss(pred, target):
     mse = F.mse_loss(pred, target)
@@ -70,6 +75,14 @@ def nrmse_loss(pred, target):
     nrmse = rmse / (y_max - y_min)
     return nrmse
 
+def test(model, criterion, input, target, mask):
+    model.eval()
+    with torch.no_grad():
+        output = model(*input)
+        output, target = output[mask], target[mask]
+        loss = criterion(output, target)
+
+    return loss.item(), output, target
 
 def train_iter(epoch, model, optimizer, criterion, input, target, train_mask, val_mask, print_every=10):
     start_t = time.time()
@@ -89,16 +102,9 @@ def train_iter(epoch, model, optimizer, criterion, input, target, train_mask, va
 
     return loss_train.item(), loss_val
 
-
-def test(model, criterion, input, target, mask):
-    model.eval()
-    with torch.no_grad():
-        output = model(*input)
-        output, target = output[mask], target[mask]
-        loss = criterion(output, target)
-
-    return loss.item(), output, target
-
+#################################
+########## PLOTTING  ############
+#################################
 
 def plot_loss(train_losses, val_losses):
     plt.figure()
@@ -111,7 +117,6 @@ def plot_loss(train_losses, val_losses):
     plt.grid()
     plt.show()
 
-
 def plot_predictions(ground_truth, predictions):
     plt.figure(figsize=(10, 6))
     plt.plot(ground_truth.squeeze().cpu(), label="Ground Truth", marker='o', color="blue", linestyle='None', alpha=0.7)
@@ -123,6 +128,9 @@ def plot_predictions(ground_truth, predictions):
     plt.grid()
     plt.show()
 
+#################################
+############ Main ###############
+#################################
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Short-GAT with LSTM for Temporal Learning')

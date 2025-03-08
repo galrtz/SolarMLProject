@@ -4,27 +4,15 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.optim import AdamW
-from torch.optim import Adam
 from torch_geometric.nn import GATConv
 import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 torch.manual_seed(42)
 np.random.seed(42)
 
-# _______ Temporal-Spatial GAT Model (Using Only Short Connections) _______
 def get_closest_edges_from_adj(edge_index, edge_attr, num_nodes, top_k_ratio=0.3):
-    """
-    Creates a mask (1/0) that keeps only the closest 30% of edges per node based on edge_attr (edge weights).
-
-    :param edge_index: Tensor of shape [2, num_edges], representing graph edges.
-    :param edge_attr: Tensor of shape [num_edges], representing edge weights (distances).
-    :param num_nodes: Total number of nodes in the graph.
-    :param top_k_ratio: Fraction of the closest edges to keep per node (default: 30%).
-    :return: A boolean mask indicating which edges to keep.
-    """
     num_edges = edge_index.shape[1]
     closest_mask = torch.zeros(num_edges, dtype=torch.bool, device=edge_index.device)
 
@@ -51,63 +39,67 @@ def get_closest_edges_from_adj(edge_index, edge_attr, num_nodes, top_k_ratio=0.3
 
     return closest_mask
 
-class TemporalAttention(nn.Module):
-    def __init__(self, input_dim, hidden_dim, num_heads, num_layers, dropout=0.1):
-        super(TemporalAttention, self).__init__()
-        self.encoder_layer = nn.TransformerEncoderLayer(
-            d_model=input_dim,
-            nhead=num_heads,
-            dim_feedforward=hidden_dim,
-            dropout=dropout,
+class ShortLSTM_GAT(nn.Module):
+    def __init__(self, in_features, lstm_hidden, n_heads, gnn_hidden, num_classes, time_steps, num_nodes, dropout=0.4):
+        super(ShortLSTM_GAT, self).__init__()
+
+        # LSTM for Temporal Processing
+        self.lstm = nn.LSTM(
+            input_size=time_steps,   # Number of past time steps
+            hidden_size=lstm_hidden, # LSTM hidden units
+            num_layers=2,            # Two LSTM layers
             batch_first=True
         )
-        self.transformer_encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=num_layers)
 
-    def forward(self, x):
-        return self.transformer_encoder(x)[:, -1, :]  # Extract last timestep
-
-
-class ShortGAT(nn.Module):
-    def __init__(self, in_features, n_hidden, n_heads, num_classes, time_steps, num_nodes, dropout=0.4):
-        super(ShortGAT, self).__init__()
-
-        self.temporal_attention = TemporalAttention(input_dim=time_steps, hidden_dim=n_hidden, num_heads=4,
-                                                    num_layers=2)
-
-        self.conv_short = GATConv(
-            in_channels=in_features,
-            out_channels=n_hidden,
+        # GAT for Spatial Processing
+        self.gat = GATConv(
+            in_channels=lstm_hidden,  # LSTM output is used as GAT input
+            out_channels=gnn_hidden,
             heads=n_heads,
             concat=True,
             dropout=dropout,
             edge_dim=1
         )
 
-        self.fc = nn.Linear(n_hidden * n_heads, num_classes)
+        # Final fully connected layer to predict GHI
+        self.fc = nn.Linear(gnn_hidden * n_heads, num_classes)
 
     def forward(self, input_tensor, edge_index, edge_attr, knn_mask):
-        if input_tensor.dim() == 2:
-            input_tensor = input_tensor.unsqueeze(1)
+        """
+        input_tensor: (batch_size, num_nodes, time_steps)
+        edge_index: Graph edges
+        edge_attr: Edge attributes (weights)
+        knn_mask: Mask for filtering short connections
+        """
+        num_nodes, time_steps = input_tensor.shape
 
-        x = self.temporal_attention(input_tensor)
+        # Reshape for LSTM: (batch_size * num_nodes, time_steps, 1)
+        x = input_tensor.view(num_nodes, time_steps).unsqueeze(-1)
 
+        # Pass through LSTM
+        lstm_out, _ = self.lstm(x)  # Output: (batch_size * num_nodes, time_steps, lstm_hidden)
+
+        # Take the last timestep's output
+        lstm_out = lstm_out[:, -1, :]  # Shape: (batch_size * num_nodes, lstm_hidden)
+
+        # Apply GAT Layer
         mask = knn_mask["short"]
         short_edges = edge_index[:, mask]
         short_edge_attr = edge_attr[mask] if edge_attr is not None else None
 
-        x_short = self.conv_short(x, short_edges, short_edge_attr)
-        x_short = F.elu(x_short)
+        x_gat = self.gat(lstm_out, short_edges, short_edge_attr)
+        x_gat = F.elu(x_gat)
 
-        x_out = self.fc(x_short)
-        return x_out
+        # Final prediction
+        x_out = self.fc(x_gat)
 
+        return x_out.view(num_nodes)  # Reshape to (batch_size, num_nodes)
 
 # Load graph data
 def load_graph(filename):
     with open(filename, 'rb') as f:
         graph = pickle.load(f)
     return graph
-
 
 #################################
 ### TRAIN, TEST, & PLOTTING  ###
@@ -119,7 +111,6 @@ def nrmse_loss(pred, target):
     y_min, y_max = target.min(), target.max()
     nrmse = rmse / (y_max - y_min)
     return nrmse
-
 
 def train_iter(epoch, model, optimizer, criterion, input, target, mask_train, mask_val, print_every=10):
     start_t = time.time()
@@ -154,7 +145,6 @@ def train_iter(epoch, model, optimizer, criterion, input, target, mask_train, ma
 
     return loss_train.item(), loss_val
 
-
 def test(model, criterion, input, target, mask):
     model.eval()
     with torch.no_grad():
@@ -163,7 +153,6 @@ def test(model, criterion, input, target, mask):
         loss = criterion(output, target)
 
     return loss.item(), output, target
-
 
 def plot_loss(train_losses, val_losses):
     plt.figure()
@@ -187,12 +176,10 @@ def plot_predictions(ground_truth, predictions):
     plt.grid()
     plt.show()
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Short-GAT with Temporal Attention')
 
-    parser.add_argument('--epochs', type=int, default=1250, help='number of epochs to train')
+    parser.add_argument('--epochs', type=int, default=600, help='number of epochs to train')
     parser.add_argument('--lr', type=float, default=0.0001, help='learning rate')
     parser.add_argument('--hidden-dim', type=int, default=64, help='hidden representation dimension')
     parser.add_argument('--num-heads', type=int, default=128, help='number of GAT heads')
@@ -202,7 +189,7 @@ if __name__ == '__main__':
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    graph = load_graph("C:/Users/hadar/Desktop/decreasing_node.pkl")
+    graph = load_graph("C:/Users/galrt/Desktop/data/pkl_datalist_normalized/decreasing_node.pkl")
 
     # Create random indices for the data
     idx = torch.randperm(len(graph.y)).to(device)
@@ -238,19 +225,23 @@ if __name__ == '__main__':
         "short": get_closest_edges_from_adj(edge_index, edge_attr, features.shape[0])
     }
 
-    model = ShortGAT(
+    # Initialize model
+    model = ShortLSTM_GAT(
         in_features=features.shape[1],
-        n_hidden=args.hidden_dim,
+        lstm_hidden=64,  # LSTM hidden size
         n_heads=args.num_heads,
-        num_classes=1,
-        time_steps=features.shape[1],
+        gnn_hidden=32,  # GAT hidden size
+        num_classes=1,  # Predicting a single GHI value per node
+        time_steps=features.shape[1],  # Past 20 time steps as input
         num_nodes=features.shape[0],
         dropout=args.dropout
     ).to(device)
 
+    # Define optimizer and loss function
     optimizer = AdamW(model.parameters(), lr=args.lr, weight_decay=5e-3)
-    criterion = nrmse_loss
+    criterion = nrmse_loss  # Normalized RMSE
 
+    # Train the model
     train_losses, val_losses = [], []
     for epoch in range(args.epochs):
         train_loss, val_loss = train_iter(epoch + 1, model, optimizer, criterion,
