@@ -133,11 +133,11 @@ model = LSTM_GAT(
     dropout=0.4
 ).to(device)
 
-optimizer = AdamW(model.parameters(), lr=0.001, weight_decay=1e-4)
+optimizer = AdamW(model.parameters(), lr=0.0001, weight_decay=1e-4)
 criterion = nrmse_loss
 
 # Training loop
-num_epochs = 101
+num_epochs = 201
 train_losses, val_losses, test_losses = [], [], []
 
 for epoch in range(num_epochs):
