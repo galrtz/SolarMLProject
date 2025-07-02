@@ -7,16 +7,15 @@ The project was conducted by Hadar Levy and Gal Schwartz, under the supervision 
 The goal of the project is to develop a machine learning model based on Graph Neural Networks (GNNs) to predict Global Horizontal Irradiance (GHI) for four future time horizons: 15, 30, 45, and 60 minutes ahead.
 
 ## Project Structure
-📦 SolarMLProject  
-├── 📁 Batching_Nodes  
-├── 📁 Data  
-├── 📁 Metrics  
-├── 📁 Model  
-├── 📁 Results  
-│   └── 📁 Images  
-├── 📁 data_proccessing  
-├── 📁 .idea (not tracked)  
-└── 📄 README.md
+- [`Model/`](./Model) – GNN model definitions and training logic.
+- [`Metrics/`](./Metrics) – Evaluation scripts for error metrics and comparisons.
+- [`Results/`](./Results) – Forecast output plots and visualizations.
+  - [`Images/`](./Results/Images) – Visualized predictions for 15, 30, 45, and 60-minute horizons.
+- [`Data/`](./Data) – Processed datasets for training and testing.
+- [`data_proccessing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
+- [`Batching_Nodes/`](./Batching_Nodes) – Code for node batching and preparation for GNN.
+- `.idea/` – IDE config (excluded from Git tracking).
+- [`README.md`](./README.md) – This documentation file.
 
 ## Results / Evaluation
 | Time Horizon | NRMSE (%) | NMAE (%) |
