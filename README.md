@@ -1,4 +1,4 @@
-# SolarMLProject
+# ☀️⚡SolarMLProject
 ## *Overview:*
 This repository documents our final project for the B.Sc. in Electrical Engineering at Tel Aviv University.
 The project was conducted by Hadar Levy and Gal Schwartz, under the supervision of Khen Cohen.
