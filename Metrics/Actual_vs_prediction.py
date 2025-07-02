@@ -9,6 +9,34 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
+def plot_forecast_specific_days(df, output_dir, node_idx, horizon_str, start_date=None, end_date=None):
+    df["forecast_time"] = pd.to_datetime(df["forecast_time"])
+    df = df.sort_values("forecast_time")
+
+    if start_date is not None:
+        df = df[df["forecast_time"] >= pd.to_datetime(start_date)]
+    if end_date is not None:
+        df = df[df["forecast_time"] <= pd.to_datetime(end_date)]
+
+    if df.empty:
+        print(f"⚠️ No data in date range for {horizon_str}")
+        return
+
+    plt.figure(figsize=(15, 5))
+    plt.plot(df["forecast_time"], df["prediction"], label="Prediction", linestyle='--', color='tomato')
+    plt.plot(df["forecast_time"], df["target"], label="Target", linestyle='-', color='teal')
+    plt.xlabel("Time")
+    plt.ylabel("GHI")
+    plt.title(f"Node {node_idx} - {horizon_str} - {start_date} to {end_date}")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+
+    filename = f"forecast_node{node_idx}_{horizon_str}_{start_date}_to_{end_date}.png"
+    full_path = os.path.join(output_dir, filename)
+    plt.savefig(full_path, dpi=300)
+    plt.close()
+    print(f"Saved date-range plot: {full_path}")
 
 def plot_forecast(df, output_path, title):
     df["forecast_time"] = pd.to_datetime(df["forecast_time"])
@@ -23,6 +51,29 @@ def plot_forecast(df, output_path, title):
     plt.tight_layout()
     plt.savefig(output_path, dpi=300, transparent=False)
     plt.close()
+
+def plot_forecast_per_day(df, output_dir, node_idx, horizon_str):
+    df["forecast_time"] = pd.to_datetime(df["forecast_time"])
+    df = df.sort_values("forecast_time")
+    df["date"] = df["forecast_time"].dt.date
+
+    for date, group in df.groupby("date"):
+        plt.figure(figsize=(12, 5))
+        plt.plot(group["forecast_time"], group["prediction"], label="Prediction", linestyle='--', color='tomato')
+        plt.plot(group["forecast_time"], group["target"], label="Target", linestyle='-', color='teal')
+        plt.xlabel("Time")
+        plt.ylabel("GHI")
+        plt.title(f"Node {node_idx} - {horizon_str} - {date}")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+
+        filename = f"forecast_node{node_idx}_{horizon_str}_{date}.png"
+        full_path = os.path.join(output_dir, filename)
+        plt.savefig(full_path, dpi=300)
+        plt.close()
+        print(f"Saved daily plot: {full_path}")
+
 
 
 def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
@@ -93,7 +144,12 @@ def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
             if node_idx == 0:
                 png_path = os.path.join(output_dir, f"forecast_node0_{horizon_str}.png")
                 plot_forecast(df, png_path, f"Forecast for Node 0 - {horizon_str}")
+                plot_forecast_specific_days(df, output_dir, node_idx, horizon_str, start_date="2017-01-12", end_date="2017-01-15")
+                plot_forecast_specific_days(df, output_dir, node_idx, horizon_str, start_date="2017-01-6", end_date="2017-01-9")
+                plot_forecast_per_day(df, output_dir, node_idx, horizon_str)
                 print(f"Saved plot for node 0: {png_path}")
+
+
 
 def load_graphs(filename):
     with open(filename, 'rb') as f:
