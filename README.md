@@ -20,7 +20,7 @@ The goal of the project is to develop a machine learning model based on Graph Ne
   - 45 minutes:
   - 60 minutes:
 
-![Loss Curve](images/loss_plot.png)
+![Actual Versus Presiction](images/loss_plot.png)
 
 ## Limitations and Future Work
 - Improve accuracy for longer-term forecasts
