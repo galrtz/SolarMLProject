@@ -68,7 +68,7 @@ def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
             df = df.sort_values("forecast_time")
 
             # Save CSV
-            csv_path = os.path.join(csv_dir, f"forecast_node{node_idx}_{horizon_str}.csv")
+            csv_path = os.path.join(csv_dir, f"forecast_node{node_idx}_{horizon_str}.csv") #example: forecast_node0_t+15.csv
             df.to_csv(csv_path, index=False)
             print(f"Saved CSV: {csv_path}")
 
