@@ -9,8 +9,7 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 ## Project Structure
 - [`Model/`](./Model) – GNN model definitions and training logic.
 - [`Metrics/`](./Metrics) – Evaluation scripts for error metrics and comparisons.
-- [`Results/`](./Results) – Forecast output plots and visualizations.
-  - [`Images/`](./Results/Images) – Visualized predictions for 15, 30, 45, and 60-minute horizons.
+- [`Results/`](./Results) – Forecast output plots and visualizations. Visualized predictions for 15, 30, 45, and 60-minute horizons.
 - [`Data/`](./Data) – Processed datasets for training and testing.
 - [`data_proccessing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
 - [`Batching_Nodes/`](./Batching_Nodes) – Code for node batching and preparation for GNN.
