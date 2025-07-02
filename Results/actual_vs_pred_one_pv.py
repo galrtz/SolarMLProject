@@ -117,28 +117,22 @@ def export_forecast_per_horizon_for_single_pv(model, graphs, device, target_lon,
             all_results.append(row)
 
         # Save CSV
-        # csv_filename = os.path.join(output_dir, f"pv_forecast_{label}.csv")
-        # df.to_csv(csv_filename, index=False)
-        # print(f"✅ Saved CSV: {csv_filename}")
-        #
+        csv_filename = os.path.join(output_dir, f"pv_forecast_{label}.csv")
+        df.to_csv(csv_filename, index=False)
+        print(f"✅ Saved CSV: {csv_filename}")
+        
+        # Save Plot for all days together
+        png_filename = os.path.join(output_dir, f"pv_forecast_{label}_all_range.png")
+        plot_forecast(df, png_filename, f"{label} Forecast for PV ({target_lon}, {target_lat})")
+        print(f"📊 Saved Plot: {png_filename}")
 
-        # # Save CSV
-        # csv_filename = os.path.join(output_dir, f"pv_forecast_{label}.csv")
-        # df.to_csv(csv_filename, index=False)
-        # print(f"✅ Saved CSV: {csv_filename}")
-        #
-        # # Save Plot
-        # png_filename = os.path.join(output_dir, f"pv_forecast_{label}_all_range.png")
-        # plot_forecast(df, png_filename, f"{label} Forecast for PV ({target_lon}, {target_lat})")
-        # print(f"📊 Saved Plot: {png_filename}")
-
-        # # Save Plot only for day 5
-        # png_filename = os.path.join(output_dir, f"pv_forecast_{label}_one_day.png")
-        # df["forecast_time"] = pd.to_datetime(df["forecast_time"])
-        # df_day5 = df[df["forecast_time"].dt.day == 6].copy()
-        # plot_forecast(df_day5, png_filename, f"{label} Forecast for PV ({target_lon}, {target_lat}) - Day 5 Only")
-        # print(f"📊 Saved Plot: {png_filename}")
-    #
+        # Save Plot only for specific day
+        png_filename = os.path.join(output_dir, f"pv_forecast_{label}_one_day.png")
+        df["forecast_time"] = pd.to_datetime(df["forecast_time"])
+        df_day5 = df[df["forecast_time"].dt.day == 6].copy()
+        plot_forecast(df_day5, png_filename, f"{label} Forecast for PV ({target_lon}, {target_lat}) - Day 5 Only")
+        print(f"📊 Saved Plot: {png_filename}")
+    
     df_all = pd.DataFrame(all_results)
 
     # ✅ Make sure forecast_time is datetime before accessing .dt
