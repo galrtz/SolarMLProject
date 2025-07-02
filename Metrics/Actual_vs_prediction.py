@@ -1,7 +1,6 @@
 def export_forecast_all_nodes(model, graphs, device, output_dir):
     model.eval()
 
-    results = {0: [], 1: [], 2: [], 3: []}
     horizons = {0: "t+15", 1: "t+30", 2: "t+45", 3: "t+60"}
     offsets = {0: 15, 1: 30, 2: 45, 3: 60}
 
@@ -20,56 +19,46 @@ def export_forecast_all_nodes(model, graphs, device, output_dir):
                 base_time = graph.date - timedelta(hours=1)
                 print(f"Graph {graph_counter} | base_time: {base_time.strftime('%Y-%m-%d %H:%M')}")
 
-                matches = range(x.shape[0])  # All nodes in the graph
+                for node_idx in range(x.shape[0]):
+                    plot_rows = []
 
-                for i in matches:
-                    for j in range(4):  # 4 forecast horizons: t+15 .. t+60
+                    for j in range(4):  # For each horizon
                         forecast_time = base_time + timedelta(minutes=offsets[j])
                         time_str = forecast_time.strftime("%Y-%m-%d %H:%M")
+                        horizon_str = horizons[j]
 
-                        results[j].append({
+                        row = {
                             "forecast_time": time_str,
-                            "prediction": pred[i, j],
-                            "target": true[i, j],
-                            "node_idx": i,
-                            "graph_idx": graph_counter,
-                            "lon": x[i, 2],
-                            "lat": x[i, 3]
-                        })
+                            "prediction": pred[node_idx, j],
+                            "target": true[node_idx, j]
+                        }
+
+                        # Save CSV per (graph, node, horizon)
+                        subdir = os.path.join(output_dir, "per_node_horizon_csvs")
+                        os.makedirs(subdir, exist_ok=True)
+                        filename = f"forecast_graph{graph_counter}_node{node_idx}_{horizon_str}.csv"
+                        path = os.path.join(subdir, filename)
+
+                        # Write single row (append mode)
+                        df_row = pd.DataFrame([row])
+                        write_header = not os.path.exists(path)
+                        df_row.to_csv(path, mode='a', header=write_header, index=False)
+
+                        # Collect for plotting (only node 0)
+                        if node_idx == 0:
+                            plot_rows.append({
+                                "forecast_time": forecast_time,
+                                "prediction": pred[node_idx, j],
+                                "target": true[node_idx, j],
+                                "horizon": horizon_str
+                            })
+
+                    # Plot only for node 0
+                    if node_idx == 0:
+                        df_plot = pd.DataFrame(plot_rows)
+                        plot_path = os.path.join(output_dir, f"forecast_graph{graph_counter}_node0_plot.png")
+                        plot_forecast_subplots(df_plot, plot_path, f"Forecast for Graph {graph_counter} - Node 0")
+                        print(f"Saved plot for node 0: {plot_path}")
 
             except Exception as e:
                 print(f"Error in graph {graph_counter}: {e}")
-
-    all_results = []
-    for j in range(4):
-        if not results[j]:
-            print(f"No data found for horizon {horizons[j]}")
-            continue
-        df = pd.DataFrame(results[j])
-        df = df.sort_values("forecast_time")
-        label = horizons[j]
-
-        for row in results[j]:
-            row["horizon"] = horizons[j]
-            all_results.append(row)
-
-        csv_filename = os.path.join(output_dir, f"all_nodes_forecast_{label}.csv")
-        df.to_csv(csv_filename, index=False)
-        print(f"Saved CSV: {csv_filename}")
-
-    # Plotting by date
-    df_all = pd.DataFrame(all_results)
-    df_all["forecast_time"] = pd.to_datetime(df_all["forecast_time"], errors="coerce")
-    df_all = df_all.dropna(subset=["forecast_time"])
-    df_all["date"] = df_all["forecast_time"].dt.date
-
-    unique_dates = df_all["date"].unique()
-
-    for date in sorted(unique_dates):
-        df_day = df_all[df_all["date"] == date].copy()
-        if df_day.empty:
-            continue
-        date_str = date.strftime("%Y-%m-%d")
-        png_path = os.path.join(output_dir, f"all_nodes_combined_forecast_{date_str}.png")
-        plot_forecast_subplots(df_day, png_path, f"Forecast for All Nodes - {date_str}")
-        print(f"Saved Plot: {png_path}")
