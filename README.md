@@ -7,6 +7,16 @@ The project was conducted by Hadar Levy and Gal Schwartz, under the supervision 
 The goal of the project is to develop a machine learning model based on Graph Neural Networks (GNNs) to predict Global Horizontal Irradiance (GHI) for four future time horizons: 15, 30, 45, and 60 minutes ahead.
 
 ## Project Structure
+📦 SolarMLProject  
+├── 📁 Batching_Nodes  
+├── 📁 Data  
+├── 📁 Metrics  
+├── 📁 Model  
+├── 📁 Results  
+│   └── 📁 Images  
+├── 📁 data_proccessing  
+├── 📁 .idea (not tracked)  
+└── 📄 README.md
 
 ## Results / Evaluation
 | Time Horizon | NRMSE (%) | NMAE (%) |
