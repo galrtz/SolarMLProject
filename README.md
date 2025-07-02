@@ -11,10 +11,10 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 ## Results / Evaluation
 | Time Horizon | NRMSE (%) | NMAE (%) |
 |--------------|-----------|----------|
-| 15 minutes   |  8.16     |          |
-| 30 minutes   |  8.9      |          |
-| 45 minutes   |  9.8      |          |
-| 60 minutes   |  10.05    |          |
+| 15 minutes   |    8.16   |          |
+| 30 minutes   |    8.9    |          |
+| 45 minutes   |    9.8    |          |
+| 60 minutes   |    10.05  |          |
 
 ### 📈 Forecast vs. Actual for GHI @ t+15 minutes
 ![Actual Versus Prediction for 15 minutes forecasting](Results/Images/pv_forecast_t+15_all_range.png)
