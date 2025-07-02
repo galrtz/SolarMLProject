@@ -7,13 +7,13 @@ The project was conducted by Hadar Levy and Gal Schwartz, under the supervision 
 The goal of the project is to develop a machine learning model based on Graph Neural Networks (GNNs) to predict Global Horizontal Irradiance (GHI) for four future time horizons: 15, 30, 45, and 60 minutes ahead.
 
 ## Repository Layout
-- [`Model/`](./Model) – GNN model definitions and training logic.
-- [`Metrics/`](./Metrics) – Evaluation scripts for error metrics and comparisons.
-- [`Results/`](./Results) – Forecast output plots and visualizations. Visualized predictions for 15, 30, 45, and 60-minute horizons.
-- [`Data/`](./Data) – Processed datasets for training and testing.
-- [`data_proccessing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
-- [`Batching_Nodes/`](./Batching_Nodes) – Code for node batching and preparation for GNN.
 - `.idea/` – IDE config.
+- [`Batching_Nodes/`](./Batching_Nodes) – Code for node batching and preparation for GNN.
+- [`Data/`](./Data) – Processed datasets for training and testing.
+- [`Metrics/`](./Metrics) – Evaluation scripts for error metrics and comparisons.
+- [`Model/`](./Model) – GNN model definitions and training logic.
+- [`Results/`](./Results) – Forecast output plots and visualizations. Visualized predictions for 15, 30, 45, and 60-minute horizons.
+- [`data_proccessing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
 - [`README.md`](./README.md) – This documentation file.
 
 ## Results / Evaluation
