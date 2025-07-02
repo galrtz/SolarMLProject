@@ -9,8 +9,16 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 ## Project Structure
 
 ## Results / Evaluation
-- MAE (15 min): 23.1
-- MAE (60 min): 37.9
+- NRMSE:
+  - 15 minutes:
+  - 30 minutes:
+  - 45 minutes:
+  - 60 minutes:
+- NMAE:
+  - 15 minutes:
+  - 30 minutes:
+  - 45 minutes:
+  - 60 minutes:
 
 ![Loss Curve](images/loss_plot.png)
 
