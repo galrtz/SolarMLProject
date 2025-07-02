@@ -1,6 +1,7 @@
 # SolarMLProject
-This repo is the documantation of our final project in Electrical Engineering BS.c in EE.
+Overview:
+This repository documents our final project for the B.Sc. in Electrical Engineering at Tel Aviv University.
+The project was conducted by Hadar Levy and Gal Schwartz, under the supervision of Dr. Khen Cohen.
 
-**DataProcessing consists two python files**:
-Creating_Dataset - takes the raw data and converts it to a csv file with all PV information required to for converting into a graph.
-Converting_Dataset_to_Graph_Data_List - takes the all csv file resulted from Creating_Dataset and creates a list of graph data.
+Objective:
+The goal of the project is to develop a machine learning model based on Graph Neural Networks (GNNs) to predict Global Horizontal Irradiance (GHI) for four future time horizons:15, 30, 45, and 60 minutes ahead.
