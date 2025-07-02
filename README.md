@@ -30,7 +30,6 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 ## Limitations and Future Work
 - Improve accuracy for longer-term forecasts
 - Add real-time weather data integration
-- Explore transformer-based GNN models
 
 ## Credits
 This project was developed by Hadar Levy and Gal Schwartz under the supervision of Khen Cohen at Tel Aviv University.
