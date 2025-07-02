@@ -20,7 +20,8 @@ The goal of the project is to develop a machine learning model based on Graph Ne
   - 45 minutes:
   - 60 minutes:
 
-![Actual Versus Presiction](Results/Images/pv_forecast_t+15_all_range.png)
+### 📈 Forecast vs. Actual for GHI @ t+15 minutes
+![Actual Versus Prediction for 15 minutes forecasting](Results/Images/pv_forecast_t+15_all_range.png)
 
 ## Limitations and Future Work
 - Improve accuracy for longer-term forecasts
