@@ -28,5 +28,5 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 - Explore transformer-based GNN models
 
 ## Credits
-This project was developed by Hadar Levy and Gal Schwartz under the supervision of Dr. Khen Cohen at Tel Aviv University.
+This project was developed by Hadar Levy and Gal Schwartz under the supervision of Khen Cohen at Tel Aviv University.
 
