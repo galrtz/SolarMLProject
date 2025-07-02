@@ -13,7 +13,7 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 - [`Data/`](./Data) – Processed datasets for training and testing.
 - [`data_proccessing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
 - [`Batching_Nodes/`](./Batching_Nodes) – Code for node batching and preparation for GNN.
-- `.idea/` – IDE config (excluded from Git tracking).
+- `.idea/` – IDE config.
 - [`README.md`](./README.md) – This documentation file.
 
 ## Results / Evaluation
