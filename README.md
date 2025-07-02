@@ -1,4 +1,5 @@
 # SolarMLProject
+This repo is the documantation of our final project in Electrical Engineering BS.c in EE.
 
 **DataProcessing consists two python files**:
 Creating_Dataset - takes the raw data and converts it to a csv file with all PV information required to for converting into a graph.
