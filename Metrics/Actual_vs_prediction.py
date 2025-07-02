@@ -26,6 +26,9 @@ def plot_forecast(df, output_path, title):
 
 
 def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
+    print("==> Starting export...")
+    print(f"Number of graphs: {len(graphs)}")
+
     model.eval()
 
     horizons = {0: "t+15", 1: "t+30", 2: "t+45", 3: "t+60"}
@@ -34,32 +37,46 @@ def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
     all_results = {}  # {node_idx: {horizon: list of rows}}
 
     with torch.no_grad():
-        for graph in graphs:
-            graph = graph.to(device)
-            output = model(graph.x, graph.edge_index, graph.edge_attr)
-            pred = output.cpu().numpy()
-            true = graph.y.cpu().numpy()
-            x = graph.x.cpu().numpy()
-            base_time = graph.date - timedelta(hours=1)
+        for g_idx, graph in enumerate(graphs):
+            print(f"\n--- Processing graph {g_idx} ---")
 
-            for node_idx in range(x.shape[0]):
-                if node_idx not in all_results:
-                    all_results[node_idx] = {h: [] for h in horizons.values()}
+            try:
+                print("Graph.date:", getattr(graph, 'date', 'NO DATE'))
+                print("Graph.x shape:", graph.x.shape)
+                print("Graph.y shape:", graph.y.shape)
 
-                for j in range(4):  # For each horizon
-                    forecast_time = base_time + timedelta(minutes=offsets[j])
-                    time_str = forecast_time.strftime("%Y-%m-%d %H:%M")
-                    horizon_str = horizons[j]
+                graph = graph.to(device)
+                output = model(graph.x, graph.edge_index, graph.edge_attr)
+                print("Model output shape:", output.shape)
 
-                    all_results[node_idx][horizon_str].append({
-                        "forecast_time": time_str,
-                        "prediction": pred[node_idx, j],
-                        "target": true[node_idx, j]
-                    })
+                pred = output.cpu().numpy()
+                true = graph.y.cpu().numpy()
+                x = graph.x.cpu().numpy()
+                base_time = getattr(graph, 'date', pd.Timestamp("2000-01-01 00:00:00")) - timedelta(hours=1)
+
+                for node_idx in range(x.shape[0]):
+                    if node_idx not in all_results:
+                        all_results[node_idx] = {h: [] for h in horizons.values()}
+
+                    for j in range(4):  # For each horizon
+                        forecast_time = base_time + timedelta(minutes=offsets[j])
+                        time_str = forecast_time.strftime("%Y-%m-%d %H:%M")
+                        horizon_str = horizons[j]
+
+                        all_results[node_idx][horizon_str].append({
+                            "forecast_time": time_str,
+                            "prediction": pred[node_idx, j],
+                            "target": true[node_idx, j]
+                        })
+
+            except Exception as e:
+                print(f"Error processing graph {g_idx}: {e}")
+                continue
 
     # Save CSVs and plots
     csv_dir = os.path.join(output_dir, "per_node_per_horizon_csvs")
     os.makedirs(csv_dir, exist_ok=True)
+    print(f"\nSaving CSVs to: {csv_dir}")
 
     for node_idx, horizon_data in all_results.items():
         for horizon_str, rows in horizon_data.items():
@@ -68,7 +85,7 @@ def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
             df = df.sort_values("forecast_time")
 
             # Save CSV
-            csv_path = os.path.join(csv_dir, f"forecast_node{node_idx}_{horizon_str}.csv") #example: forecast_node0_t+15.csv
+            csv_path = os.path.join(csv_dir, f"forecast_node{node_idx}_{horizon_str}.csv")
             df.to_csv(csv_path, index=False)
             print(f"Saved CSV: {csv_path}")
 
@@ -77,7 +94,6 @@ def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
                 png_path = os.path.join(output_dir, f"forecast_node0_{horizon_str}.png")
                 plot_forecast(df, png_path, f"Forecast for Node 0 - {horizon_str}")
                 print(f"Saved plot for node 0: {png_path}")
-
 
 def load_graphs(filename):
     with open(filename, 'rb') as f:
@@ -114,7 +130,7 @@ class LSTM_GAT(nn.Module):
 # === RUN THE EXPORT ===
 
 # Load test graphs
-pkl_path_for_test = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\new_model_changing dataset\test_pkl_try_somthing.pkl"
+pkl_path_for_test = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\test_splitting_directory\pkl.pkl"
 test_graphs = load_graphs(pkl_path_for_test)
 
 # Setup device
@@ -128,15 +144,15 @@ model = LSTM_GAT(
     n_heads=4,
     num_classes=4,
     num_static_features=8,
-    dropout=0.4
+    dropout=0.1
 )
 
 model.load_state_dict(torch.load(
-    r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\new_model_changing dataset\model_weights_testing_something.pkl"
+    r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\model.pkl"
 ))
 model.to(device)
 model.eval()
 
 # Export forecasts
-output_dir = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\model_new\actual_vs_pred"
+output_dir = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\actual_vs_pred_new"
 export_forecast_per_node_per_horizon_csv(model, test_graphs, device, output_dir)
