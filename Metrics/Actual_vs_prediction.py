@@ -169,9 +169,9 @@ def export_forecast_per_node_per_horizon_csv(model, graphs, device, output_dir):
 
 # === Main ===
 if __name__ == "__main__":
-    pkl_path = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\test_splitting_directory\pkl.pkl"
-    model_path = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\model.pkl"
-    output_dir = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\actual_vs_pred_new_2"
+    pkl_path = r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\test_splitting_directory\pkl.pkl"
+    model_path = r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\model.pkl"
+    output_dir = r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\actual_vs_pred_new_2"
 
     test_graphs = load_graphs(pkl_path)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
