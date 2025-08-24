@@ -142,8 +142,8 @@ def evaluate_nrmse(model, data_loader, device):
 # Load Dataset
 # ========================
 
-pkl_path_for_train = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\filtered_train_data\pkl.pkl"
-pkl_path_for_test = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\test_splitting_directory\pkl.pkl"
+pkl_path_for_train = r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\filtered_train_data\pkl.pkl"
+pkl_path_for_test = r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\test_splitting_directory\pkl.pkl"
 # test_graphs = load_graphs(pkl_path_for_test)
 train_graphs_all = load_graphs(pkl_path_for_train)
 test_graphs_all = load_graphs(pkl_path_for_test)
@@ -250,4 +250,4 @@ for i in range(4):
     plt.tight_layout()
     plt.show()
 
-torch.save(model.state_dict(), r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\model.pkl")
+torch.save(model.state_dict(), r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\model.pkl")
