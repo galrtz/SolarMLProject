@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 # === Input directory: contains files like forecast_node0_t+15.csv, etc.
-input_dir = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\model_new\actual_vs_pred_new\per_node_per_horizon_csvs"
+input_dir = r"C:\Users\<user>\Desktop\relevant_directories\model_new\actual_vs_pred_new\per_node_per_horizon_csvs"
 
 # === Prediction horizons
 horizons = ["t+15", "t+30", "t+45", "t+60"]
