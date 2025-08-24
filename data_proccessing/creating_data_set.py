@@ -7,17 +7,17 @@ def process_csv_directory(csv_directory, output_file, number_of_prev_hours=24):
     data = []
     target_hours = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
     target_minutes = [0, 15, 30, 45]
-    start_day, start_month = 1, 1 #Change here
-    end_day, end_month = 29, 6 #Change here
+    start_day, start_month = 1, 1 
+    end_day, end_month = 29, 6 
 
-    start_time = pd.Timestamp(year=2018, month=start_month, day=start_day) #Change here
-    end_time = pd.Timestamp(year=2018, month=end_month, day=end_day) #Change here
+    start_time = pd.Timestamp(year=2018, month=start_month, day=start_day)
+    end_time = pd.Timestamp(year=2018, month=end_month, day=end_day) 
 
     total_files = 0
     total_rows_collected = 0
 
     for file_name in tqdm(os.listdir(csv_directory)):
-        if not file_name.endswith('.csv') or '2018' not in file_name: #Change here
+        if not file_name.endswith('.csv') or '2018' not in file_name: 
             continue
 
         total_files += 1
@@ -50,7 +50,7 @@ def process_csv_directory(csv_directory, output_file, number_of_prev_hours=24):
                 continue
 
             df['datetime'] = pd.to_datetime({
-                'year': 2018, #Change here
+                'year': 2018,
                 'month': df['Month'],
                 'day': df['Day'],
                 'hour': df['Hour'],
@@ -116,12 +116,11 @@ def process_csv_directory(csv_directory, output_file, number_of_prev_hours=24):
 
     df_output = pd.DataFrame(data)
     df_output.to_csv(output_file, index=False)
-    print(f"\n✅ Done. {total_rows_collected} records collected from {total_files} files.")
-    print(f"📦 Data saved to: {output_file}")
+    print(f"\nDone. {total_rows_collected} records collected from {total_files} files.")
+    print(f"Data saved to: {output_file}")
 
-# הפעלה
 process_csv_directory(
-    csv_directory=r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\raw-20241220T103937Z-001\raw",
-    output_file=r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\testing\data_2018_train.csv", #Change here
+    csv_directory=r"C:\Users\<user>\Desktop\relevant_directories\raw-20241220T103937Z-001\raw",
+    output_file=r"C:\Users\<user>\Desktop\relevant_directories\testing\data_2018_train.csv",
     number_of_prev_hours=8
 )
