@@ -262,8 +262,8 @@ def evaluate_nrmse(model, data_loader, device):
     return nrmse.cpu().numpy()
 
 #----------------new ---------------------------
-# pkl_path_for_train = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\testing_2\2018_train_pkl_filterd.pkl"
-pkl_path_for_train=r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\filtered_train_data\pkl.pkl"
+# pkl_path_for_train = r"C:\Users\user\Desktrelevant_directories\relevant\testing_2\2018_train_pkl_filterd.pkl"
+pkl_path_for_train=r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\filtered_train_data\pkl.pkl"
 
 # test_graphs = load_graphs(pkl_path_for_test)
 train_graphs_all = load_graphs(pkl_path_for_train)
@@ -386,4 +386,4 @@ for i in range(4):
 # draw_nrmse_map_from_loader(model, test_loader, device)
 
 
-torch.save(model.state_dict(), r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\new_model_changing dataset\model_weights_testing_something.pkl")
+torch.save(model.state_dict(), r"C:\Users\<user>\Desktop\relevant_directories\new_model_changing dataset\model_weights_testing_something.pkl")
