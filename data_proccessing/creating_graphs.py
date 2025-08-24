@@ -67,7 +67,7 @@ def forecast_for_exact_pv(model, graphs, device, target_lon, target_lat, target_
 
     if save_path:
         df.to_csv(save_path, index=False)
-        print(f"✅ Saved results to {save_path}")
+        print(f"Saved results to {save_path}")
 
     return df
 
@@ -200,7 +200,7 @@ def create_graph_by_distance(csv_file_path, max_distance_km=16, characteristic_d
 
 
 # Build dataset
-data_dir = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\test_splitting_directory"
+data_dir = r"C:\Users\<user>\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\test_splitting_directory"
 
 
 csv_files = [f for f in os.listdir(data_dir) if f.endswith(".csv")]
@@ -222,9 +222,7 @@ print(len(datalist))
 
 
 # Save dataset
-# output_pkl_path = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\testing_2\2017_test_pkl_past_hours.pkl"
-# output_pkl_path = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\filtered_train_data\pkl.pkl"
-output_pkl_path  = r"C:\Users\hadar\Desktop\אוניברסיטה\פרויקט גמר\relevant_directories\relevant\model_new\test_splitting_directory\pkl.pkl"
+output_pkl_path  = r"C:\Users\<user>\Desktop\relevant_directories\relevant\model_new\test_splitting_directory\pkl.pkl"
 
 
 
