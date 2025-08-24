@@ -31,4 +31,4 @@ acf_stats = compute_acf_stats(acf_path)
 
 # Save to CSV
 acf_stats.to_csv(r"C:\Users\<user>>\Desktop\final_project_directory\correlation_data_proccessing\clouds_simv\auto_correclation/mean_and_var.csv")
-print("✅ Saved mean/variance per lag to: acf_lag_statistics.csv")
+print(" Saved mean/variance per lag to: acf_lag_statistics.csv")
