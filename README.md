@@ -37,10 +37,10 @@ The model’s accuracy was evaluated using Normalized Root Mean Square Error (NR
 ![Actual Versus Prediction for 15 minutes forecasting](Results/+15/forecast_node0_t+15.png)
 
 ## Limitations and Future Work
-- Overfitting: Training was limited by computational resources. Expanding training volume and graph scope would likely improve generalization.
-- Data realism: Current datasets are based on simulated GHI (NREL). Incorporating real sensor data could improve robustness.
-- Geographical scaling: Extending beyond the Jerusalem region to all of Israel’s climate zones.
-- Future directions:
+- **Overfitting**: Training was limited by computational resources. Expanding training volume and graph scope would likely improve generalization.
+- **Data realism**: Current datasets are based on simulated GHI (NREL). Incorporating real sensor data could improve robustness.
+- **Geographical scaling**: Extending beyond the Jerusalem region to all of Israel’s climate zones.
+- **Future directions**:
   - Cloud-based intermediate forecasting (using satellite/cloud simulators).
   - Impact of PV network density on forecast accuracy.
   - Estimation of GHI at unsensed locations via graph-based spatial interpolation
