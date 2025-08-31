@@ -50,7 +50,7 @@ This project makes use of external tools and datasets, including:
 - **SatelliteCloudGenerator**
   - Repository: [strath-ai/SatelliteCloudGenerator](https://github.com/strath-ai/SatelliteCloudGenerator)  
   - Publication: Czerkawski, M.; Atkinson, R.; Michie, C.; Tachtatzis, C. SatelliteCloudGenerator: Controllable Cloud and Shadow Synthesis for Multi-Spectral Optical Satellite Images. Remote Sensing 2023, 15(17), 4138. https://doi.org/10.3390/rs15174138
- - **SolarPanels Cloud Simulator**
+- **SolarPanels Cloud Simulator**
   - Repository: [khencohen/SolarPanels](https://github.com/khencohen/SolarPanels)  
 
 ## Credits
