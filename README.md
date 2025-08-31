@@ -36,10 +36,10 @@ The goal of the project is to develop a machine learning model based on **Graph 
 
 ## References & Acknowledgements
 This project makes use of external tools and datasets, including:
-- SatelliteCloudGenerator
-  - Repository: strath-ai/SatelliteCloudGenerator
+- **SatelliteCloudGenerator**
+  - Repository: [strath-ai/SatelliteCloudGenerator](https://github.com/strath-ai/SatelliteCloudGenerator)  
   - Publication: Czerkawski, M.; Atkinson, R.; Michie, C.; Tachtatzis, C. SatelliteCloudGenerator: Controllable Cloud and Shadow Synthesis for Multi-Spectral Optical Satellite Images. Remote Sensing 2023, 15(17), 4138. https://doi.org/10.3390/rs15174138
- - SolarPanels Cloud Simulator
-   - Repository: khencohen/SolarPanels
+ - **SolarPanels Cloud Simulator**
+  - Repository: [khencohen/SolarPanels](https://github.com/khencohen/SolarPanels)  
 ## Credits
 This project was developed by Hadar Levy and Gal Schwartz under the supervision of Khen Cohen at Tel Aviv University.
