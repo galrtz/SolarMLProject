@@ -24,7 +24,7 @@ By modeling Israel’s photovoltaic (PV) network as a graph, the system captures
 - [`README.md`](./README.md) – This documentation file.
 
 ## Results / Evaluation
-The model’s accuracy was evaluated using Normalized Root Mean Square Error (NRMSE) and Normalized Mean Absolute Error (NMAE).
+The model’s accuracy was evaluated using **Normalized Root Mean Square Error (NRMSE)** and **Normalized Mean Absolute Error (NMAE)**.
 
 | Time Horizon | NRMSE (%) | NMAE (%) |
 |--------------|-----------|----------|
