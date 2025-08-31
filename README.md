@@ -16,7 +16,7 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 - [`Model/`](./Model) – GNN model definitions and training logic.
 - [`Project/`](./Project) – Project book, poster, and final presentation (PPTX).
 - [`Results/`](./Results) – Forecast output plots and visualizations. Visualized predictions for 15, 30, 45, and 60-minute horizons.
-- [`data_proccessing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
+- [`data_processing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
 - [`README.md`](./README.md) – This documentation file.
 
 ## Results / Evaluation
@@ -34,6 +34,9 @@ The goal of the project is to develop a machine learning model based on Graph Ne
 - Improve accuracy for longer-term forecasts
 - Add real-time weather data integration
 
+## References
+This project makes use of external tools and datasets, including:
+- Czerkawski, M.; Atkinson, R.; Michie, C.; Tachtatzis, C. SatelliteCloudGenerator: Controllable Cloud and Shadow Synthesis for Multi-Spectral Optical Satellite Images. Remote Sensing 2023, 15(17), 4138. https://doi.org/10.3390/rs15174138
+
 ## Credits
 This project was developed by Hadar Levy and Gal Schwartz under the supervision of Khen Cohen at Tel Aviv University.
-
