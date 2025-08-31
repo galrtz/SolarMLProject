@@ -4,7 +4,8 @@ This repository documents our final project for the **B.Sc. in Electrical Engine
 The project was conducted by **Hadar Levy** and **Gal Schwartz**, under the supervision of **Khen Cohen**.
 
 ## Objective
-The goal of the project is to develop a machine learning model based on **Graph Neural Networks (GNNs)** to predict **Global Horizontal Irradiance (GHI)** for four future time horizons: **15, 30, 45, and 60 minutes ahead**.
+The goal of this project is to develop a machine learning model based on a hybrid architecture of **Graph Attention Networks (GATs)** and **Long Short-Term Memory (LSTM) networks**, designed to predict **Global Horizontal Irradiance (GHI)** for four future horizons: **15, 30, 45, and 60 minutes ahead**.
+By modeling Israel’s photovoltaic (PV) network as a graph, the system captures both temporal dynamics (via LSTMs) and spatial dependencies (via GATs), enabling more accurate short-term forecasts critical for smart grid management.
 
 ## Repository Layout
 - `.idea/` – IDE config.
@@ -14,12 +15,17 @@ The goal of the project is to develop a machine learning model based on **Graph 
 - [`Data/`](./Data) – Processed datasets for training and testing.
 - [`Metrics/`](./Metrics) – Evaluation scripts for error metrics and comparisons.
 - [`Model/`](./Model) – GNN model definitions and training logic.
-- [`Project/`](./Project) – Project book, poster, and final presentation (PPTX).
+- [`Project/`](./Project) – Project documentation:
+  - Project book
+  - Final presentation (PPTX)
+  - Poster
 - [`Results/`](./Results) – Forecast output plots and visualizations. Visualized predictions for 15, 30, 45, and 60-minute horizons.
 - [`data_processing/`](./data_proccessing) – Scripts to create and convert datasets into graph format.
 - [`README.md`](./README.md) – This documentation file.
 
 ## Results / Evaluation
+The model’s accuracy was evaluated using Normalized Root Mean Square Error (NRMSE) and Normalized Mean Absolute Error (NMAE).
+
 | Time Horizon | NRMSE (%) | NMAE (%) |
 |--------------|-----------|----------|
 | 15 minutes   |    8.25   |   11.35  |
@@ -31,8 +37,13 @@ The goal of the project is to develop a machine learning model based on **Graph 
 ![Actual Versus Prediction for 15 minutes forecasting](Results/+15/forecast_node0_t+15.png)
 
 ## Limitations and Future Work
-- Improve accuracy for longer-term forecasts
-- Add real-time weather data integration
+- Overfitting: Training was limited by computational resources. Expanding training volume and graph scope would likely improve generalization.
+- Data realism: Current datasets are based on simulated GHI (NREL). Incorporating real sensor data could improve robustness.
+- Geographical scaling: Extending beyond the Jerusalem region to all of Israel’s climate zones.
+- Future directions:
+  - Cloud-based intermediate forecasting (using satellite/cloud simulators).
+  - Impact of PV network density on forecast accuracy.
+  - Estimation of GHI at unsensed locations via graph-based spatial interpolation
 
 ## References & Acknowledgements
 This project makes use of external tools and datasets, including:
@@ -41,5 +52,6 @@ This project makes use of external tools and datasets, including:
   - Publication: Czerkawski, M.; Atkinson, R.; Michie, C.; Tachtatzis, C. SatelliteCloudGenerator: Controllable Cloud and Shadow Synthesis for Multi-Spectral Optical Satellite Images. Remote Sensing 2023, 15(17), 4138. https://doi.org/10.3390/rs15174138
  - **SolarPanels Cloud Simulator**
   - Repository: [khencohen/SolarPanels](https://github.com/khencohen/SolarPanels)  
+
 ## Credits
 This project was developed by Hadar Levy and Gal Schwartz under the supervision of Khen Cohen at Tel Aviv University.
